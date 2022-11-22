@@ -1,45 +1,48 @@
 
 
-from flask import render_template
-from flask import Flask
-from markupsafe import escape
-from flask import request
-from joblib import load
-import pandas as pd
 
+import numpy as np
+from flask import Flask, request, jsonify, render_template
+import pickle
+import pandas as pd
+from joblib import dump, load
 app = Flask(__name__)
 
-model_path = "models/model.pkl"
-with open(model_path, 'rb') as file:
+filename = "models/model.pkl"
+
+with open(filename, 'rb') as file:
     model = load(file)
 
+
 @app.route('/')
-def hello():
-    return 'Hello, World! This is my first flask app'
+def home():
+    return render_template('index.html')
 
-@app.route('/predict', methods=['GET', 'POST'])
+
+@app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        gas_type = request.form['gas_type']
-        water_content = float(request.form['water_content'])
-        viscosity = float(request.form['viscosity'])
-        time_minutes = float(request.form['time_minutes'])
-        inputs = [[gas_type,water_content,viscosity,time_minutes]]
-        df = pd.DataFrame(inputs, columns=['Gas', 'Water_content',
+    '''
+    For rendering results on HTML GUI
+    '''
+    X_test_new = [x.strip() for x in request.form.values()]
+    X_test_new[1] = float(X_test_new[1])
+    X_test_new[2] = float(X_test_new[2])
+    X_test_new[3] = float(X_test_new[3])
+
+    # final_features = [np.array(int_features)]
+    # X_test_new = [x for x in request.form.values()]
+
+    # # print(sgd_clf.predict(X_test_new_count))
+    #
+    ll = [X_test_new]
+    new_data = pd.DataFrame(ll, columns=['Gas', 'Water_content',
                                          'viscosity','time_minutes'])
-        prediction = model.predict(df)[0]
-        prediction = round(prediction, 2)
-        
-        return render_template('predict.html', prediction_text='Estimated IFT =  {} mN/m'.format( prediction))
-    
+    prediction = model.predict(new_data)[0]
+    output = round(prediction, 2)
 
-@app.route('/welcome/')
-@app.route('/welcome/<name>')
-def welcome(name=None):
-    return render_template('welcome.html', name=name)
+    return render_template('index.html', prediction_text='Estimated IFT =  {} mN/m'.format( output))
 
 
-if __name__ == '__main__':
-    app.run()
-
+if __name__ == "__main__":
+    app.run(debug=True)
 

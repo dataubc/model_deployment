@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html >
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>ML API</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  
+</head>
+
+<body>
+ <div class="login">
+	<h1>IFT Prediction of Gas Injection in Heavy Oil Emulsion</h1>
+     <h4>Gas type can be CO2 or CH3, Water Content can be in the range 0-1, time elapsed can be 0-500 minutes</h4>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}"method="post">
+    	<input type="text" name="gas_type" placeholder="Gas type" required="required" />
+        <input type="text" name="water_content" placeholder="Water Content" required="required" />
+        <input type="text" name="viscosity" placeholder="Oil Viscosity" required="required" />
+        <input type="text" name="time" placeholder="Time elapsed in minutes" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict IFT</button>
+    </form>
+
+   <br>
+   <br>
+   {{ prediction_text }}
+     {{ prediction_text2 }}
+
+ </div>
+
+
+</body>
+</html>
