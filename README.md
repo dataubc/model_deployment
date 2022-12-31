@@ -13,7 +13,11 @@ docker build -t my-app .
  ```bash
 docker run -p 5000:5000 my-app
  ```
+The appe will be running in the following port
 
+```
+http://localhost:5000/
+```
 
 Part of my teaching at Concordia Data Science Bootcamp*
 

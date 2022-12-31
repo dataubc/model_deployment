@@ -5,7 +5,7 @@ RUN pip install flask
 RUN pip install pandas
 RUN pip install joblib
 
-COPY models/model.pkl /app/model.pkl
+COPY models /app/models
 COPY app.py /app/app.py
 COPY templates /app/templates
 
