@@ -1,6 +1,5 @@
 # Mode Deployment Locally, Using Docker, Using K8s and AWS
 
-
 1. Run Flask application locally :
 
 ```python
@@ -83,6 +82,10 @@ and push it the ECR
 ```bash
 docker push <account_id>.dkr.ecr.ca-central-1.amazonaws.com/repo1:latest
 ```
+
+In the ECS AWS, we will need to create a cluster with a network and ECS instance. Once the cluster is created we will need to create a task in the task definition where we will have to define our container specificaitons. There we will need to provide the url for the image, and will do the port mapping, if you are using the flask then we need to use 5000 port.
+
+Next, you will need to define a service that will be used to give access to the container, make sure to allow inbound and outbound traffic for the EC2 instance.
 
 
 
