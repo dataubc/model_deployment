@@ -89,9 +89,21 @@ Next, you will need to define a service that will be used to give access to the 
 
 
 
+To clean up:
 
+1- Delete the deployment
+```bash
+kubectl delete service my-service
+```
 
+2- Delete the service
+```bash
+kubectl delete deployment model-deployment
+```
 
-This should launch the app in the browser
+```bash
+minikube stop
+```
+
 
 
