@@ -14,7 +14,7 @@ python app.py
 ```bash
 docker build -t my-app .
 ```
- - Then, runn then container
+ - Then run the container
 
  ```bash
 docker run -p 5000:5000 my-app
