@@ -1,109 +1,86 @@
-# Mode Deployment Locally, Using Docker, Using K8s and AWS
+"""
+# Model Deployment Strategies: Local, Docker, Kubernetes (K8s), and AWS
 
-1. Run Flask application locally :
-
-```python
+## 1. Running a Flask Application Locally
+Deploy ML models using Flask by executing the application with the command:
+```bash
 python app.py
 ```
-- Using Flask to deploy ML models. We will gradually learn how to use html form and a pre-saved pickle model to pass the user's input to the model, run the prediction process and print back the output of the model.
+This process involves using an HTML form and a pickle file to run predictions and display outputs.
 
-2. To deploy the model using docker
+## 2. Deployment Using Docker
+To containerize your application with Docker, follow these steps:
 
- - First create the docker image using the following commands:
- 
+- Build the Docker image:
 ```bash
 docker build -t my-app .
 ```
- - Then run the container
-
- ```bash
+- Run the Docker container:
+```bash
 docker run -p 5000:5000 my-app
- ```
-The app will be running in the following port
-
 ```
-http://localhost:5000/
-```
+Access the app at http://localhost:5000/.
 
-3. To deploy the app to K8s:
+## 3. Deployment Using Kubernetes (K8s)
+Deploy your app on Kubernetes with the following commands:
 
-Start your minkube cluster
+- Start Minikube:
 ```bash
 minikube start
 ```
-build the image in the cluster 
+- Build the image within Minikube:
 ```bash
 minikube image build -t my-app .
 ```
-Now create deployment
+- Deploy the application:
 ```bash
 cd kubernetes
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
-You should be able to see the app up and running
-
+Check the deployment and service:
 ```bash
-kubectl get pod
-```
-```bash
+kubectl get pods
 kubectl get svc
 ```
-
+Launch the app in a browser:
 ```bash
 minikube service my-service
 ```
 
-This should launch the app in the browser
+## 4. Deployment on AWS ECS
+For AWS ECS deployment, prepare your Docker image and push it to AWS ECR:
 
-4. Deployment to AWS ECS
-
-First we need to tage the image and then push it to the AWS ECR
-
-Since I am using the M1 chip, I will be using the `--platform=linux/amd64 .` to build the image of the app
-
+- Build the image (for M1 chip, use --platform=linux/amd64):
 ```bash
 docker build -t my-app --platform=linux/amd64 .
 ```
-
-Now log in to your ECR using the following
+- Authenticate with AWS ECR:
 ```bash
 aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin <account_id>.dkr.ecr.ca-central-1.amazonaws.com
 ```
-You can also find the commands to sign in to the ECR in the image repo in the ECR
-
-Next, you can now tag the image
-
+- Tag and push the Docker image:
 ```bash
-docker tag my-app:latest <account_id>.dkr.ecr.ca-central-1.amazonaws.com/repo1:latest
+docker tag my-app:latest <account_id>.dkr.ecr.ca-central-1.amazonaws.com/my-repo:latest
 ```
-and push it the ECR
-
+- Push the image to AWS ECR:
 ```bash
-docker push <account_id>.dkr.ecr.ca-central-1.amazonaws.com/repo1:latest
+docker push <account_id>.dkr.ecr.ca-central-1.amazonaws.com/my-repo:latest
 ```
 
-In the ECS AWS, we will need to create a cluster with a network and ECS instance. Once the cluster is created we will need to create a task in the task definition where we will have to define our container specificaitons. There we will need to provide the url for the image, and will do the port mapping, if you are using the flask then we need to use 5000 port.
+In AWS ECS, create a cluster and an instance with a network. Then create a task definition where you define the container specifications and provide the URL for the image. For Flask apps, use port 5000.
 
-Next, you will need to define a service that will be used to give access to the container, make sure to allow inbound and outbound traffic for the EC2 instance.
+Define a service in ECS to access the container and ensure the EC2 instance allows inbound and outbound traffic.
 
+## Cleanup:
 
-
-To clean up:
-
-1- Delete the deployment
+- Delete the Kubernetes deployment:
 ```bash
 kubectl delete service my-service
-```
-
-2- Delete the service
-```bash
 kubectl delete deployment model-deployment
 ```
 
+- Stop Minikube:
 ```bash
 minikube stop
 ```
-
-
-
